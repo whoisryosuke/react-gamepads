@@ -1,6 +1,4 @@
-import * as React from 'react';
+import useGamepads from './useGamepads';
+import { GamepadsProvider, GamepadsContext } from './GamepadsContext';
 
-// Delete me
-export const Thing = () => {
-  return <div>the snozzberries taste like snozzberries</div>;
-};
+export { useGamepads, GamepadsProvider, GamepadsContext };
