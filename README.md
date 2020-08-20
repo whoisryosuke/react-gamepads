@@ -1,8 +1,8 @@
-# react-gamepads
+# 🎮 react-gamepads 🕹
 
 A set of hooks and utilities for using the [Gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API) inside React. Use a hook, get access to gamepad input -- it's that easy.
 
-## Getting Started
+## 🚀 Getting Started
 
 ```bash
 yarn add react-gamepads
@@ -10,7 +10,7 @@ yarn add react-gamepads
 
 Now you just pick: **hooks** or **context**? 👇🏼
 
-### useGamepads Hook
+### `useGamepads` Hook
 
 With this hook you can have a component **subscribe** to all gamepad input. This allows you to have a component "react" to gameplay input as it's received.
 
@@ -30,11 +30,11 @@ export default function App() {
 
 > Hooks are a great way of quickly bringing gamepad input to any component. You could also use this to create a single "controller" component that handles all input across the app (like a `<GameController buttonOne={() => yourFunc} />`) -- see [react-gamepad for an example of this](https://github.com/SBRK/react-gamepad/blob/master/src/Gamepad.js).
 
-### Gamepads Context Provider
+### `<GamepadsProvider>` Context
 
 With context, you can have parts (or the entire app) get "provided" all gamepad input, and **subscribe** to the data using a context consumer.
 
-First, wrap the app in the provider:
+1. First, wrap the app in the provider:
 
 ```jsx
 import React from 'react';
@@ -46,7 +46,7 @@ export default function App() {
 }
 ```
 
-Then you can use the context in another component with `useContext()`:
+2. Then you can use the context in another component with `useContext()`:
 
 ```jsx
 import React, { useContext, useLayoutEffect, useState } from 'react';
@@ -61,7 +61,7 @@ const GameInput = () => {
 export default GameCursor;
 ```
 
-Or you can use a context consumer component, which provides the gamepad data as a "render prop":
+2a. Or you can use a context consumer component, which provides the gamepad data as a "render prop":
 
 ```jsx
 <GamepadsContext.Consumer>
@@ -120,29 +120,29 @@ Or you can use the `<GamepadController>` component to see a controller. This wil
 />
 ```
 
-## Examples
+## 📦 Examples
 
 Here are some examples to get you started using this library and get those creative juices pumping ⚡️🧠💡
 
-### Game Cursor
+### 🖱 Game Cursor
 
 This is a simple example of using the analog sticks and directional pad to move a cursor around the screen. You can also press a button to change the cursor color. It uses `framer-motion` under the hood to smoothly animate the cursor. Keep in mind this does not check for the edges of the screen.
 
 [Browse and run the code using CodeSandbox](https://codesandbox.io/s/react-gamepad-with-cursor-analog-support-better-perf-4buhx)
 
-### Menu
+### 🗄 Menu
 
 This is an example of using controller input to navigate an HTML menu. You can press the up or down buttons on the directional pad to change the active item of the menu. Pressing a button "clicks" the link, navigating to the selected route.
 
 [Browse and run the code using CodeSandbox](https://codesandbox.io/s/react-gamepad-menu-w-controller-ui-hook-version-with-press-navigation-5y03m)
 
-### Horse Game
+### 🐎 Horse Game
 
 This is a simple game based on the **"Horse Stance"** mini-game from Shenmue 3. It features a "Game Start" screen with a "Press any button" example, game input using analog sticks and directional pad, and other basic game design techniques. The goal of the game is to keep the "position" at or around 500, which gives you the highest score.
 
 [Browse and run the code using CodeSandbox](https://codesandbox.io/s/react-gamepad-menu-w-controller-ui-hook-version-shenmue-horse-working-oioei)
 
-## Development
+## 🛠 Development
 
 1. Install dependencies: `yarn`
 1. Compile TS to JS with hot reloading: `yarn watch`
@@ -167,6 +167,6 @@ This will walk you through the process of writing the proper syntax for semantic
 
 Ideally this should be handled by the CI/CD. There is a Github Actions workflow that handles most of this, minus the NPM publish.
 
-# Credits / References
+# 📚 Credits / References
 
 - [Gamepad API - MDN Docs](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API)
