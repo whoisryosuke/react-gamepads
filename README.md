@@ -1,167 +1,172 @@
-# TSDX React User Guide
+# react-gamepads
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+A set of hooks and utilities for using the [Gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API) inside React. Use a hook, get access to gamepad input -- it's that easy.
 
-> This TSDX setup is meant for developing React components (not apps!) that can be published to NPM. If you’re looking to build an app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
-
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
-
-## Commands
-
-TSDX scaffolds your new library inside `/src`, and also sets up a [Parcel-based](https://parceljs.org) playground for it inside `/example`.
-
-The recommended workflow is to run TSDX in one terminal:
+## Getting Started
 
 ```bash
-npm start # or yarn start
+yarn add react-gamepads
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+Now you just pick: **hooks** or **context**? 👇🏼
 
-Then run the example inside another:
+### useGamepads Hook
 
-```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
-```
+With this hook you can have a component **subscribe** to all gamepad input. This allows you to have a component "react" to gameplay input as it's received.
 
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, [we use Parcel's aliasing](https://github.com/palmerhq/tsdx/pull/88/files).
+In this example, we take the input and set the component's state to it. This lets you use the state inside the component and have it change. _You could also store it inside a "ref" (with `useRef`) if preferred._
 
-To do a one-off build, use `npm run build` or `yarn build`.
+```jsx
+import React, { useState } from 'react';
+import { useGamepads } from 'react-gamepads';
 
-To run tests, use `npm test` or `yarn test`.
+export default function App() {
+  const [gamepads, setGamepads] = useState({});
+  useGamepads(gamepads => setGamepads(gamepads));
 
-## Configuration
-
-Code quality is [set up for you](https://github.com/palmerhq/tsdx/pull/45/files) with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`. This runs the test watcher (Jest) in an interactive mode. By default, runs tests related to files changed since the last commit.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```shell
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
-
-#### React Testing Library
-
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
-
-### Rollup
-
-TSDX uses [Rollup v1.x](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### TypeScript
-
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### Travis
-
-_to be completed_
-
-### Circle
-
-_to be completed_
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
+  return <div>{gamepads[0].buttons[4].pressed}</div>;
 }
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+> Hooks are a great way of quickly bringing gamepad input to any component. You could also use this to create a single "controller" component that handles all input across the app (like a `<GameController buttonOne={() => yourFunc} />`) -- see [react-gamepad for an example of this](https://github.com/SBRK/react-gamepad/blob/master/src/Gamepad.js).
 
-## Module Formats
+### Gamepads Context Provider
 
-CJS, ESModules, and UMD module formats are supported.
+With context, you can have parts (or the entire app) get "provided" all gamepad input, and **subscribe** to the data using a context consumer.
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
+First, wrap the app in the provider:
 
-## Using the Playground
+```jsx
+import React from 'react';
 
-```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
+import { GamepadsProvider } from 'react-gamepads';
+
+export default function App() {
+  return <GamepadsProvider>Your app</GamepadsProvider>;
+}
 ```
 
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**!
+Then you can use the context in another component with `useContext()`:
 
-## Deploying the Playground
+```jsx
+import React, { useContext, useLayoutEffect, useState } from 'react';
+import { GamepadsContext } from '../context/GamepadsContext';
 
-The Playground is just a simple [Parcel](https://parceljs.org) app, you can deploy it anywhere you would normally deploy that. Here are some guidelines for **manually** deploying with the Netlify CLI (`npm i -g netlify-cli`):
+const GameInput = () => {
+  const { gamepads } = useContext(GamepadsContext);
 
-```bash
-cd example # if not already in the example folder
-npm run build # builds to dist
-netlify deploy # deploy the dist folder
+  return <div>{gamepads[0].buttons[0].pressed}</div>;
+};
+
+export default GameCursor;
 ```
 
-Alternatively, if you already have a git repo connected, you can set up continuous deployment with Netlify:
+Or you can use a context consumer component, which provides the gamepad data as a "render prop":
 
-```bash
-netlify init
-# build command: yarn build && cd example && yarn && yarn build
-# directory to deploy: example/dist
-# pick yes for netlify.toml
+```jsx
+<GamepadsContext.Consumer>
+  {({ gamepads }) => {
+    return <div>{gamepads[0].buttons[0].pressed}</div>;
+  }}
+</GamepadsContext.Consumer>
 ```
 
-## Named Exports
+> Context is great for providing sections of the app with gamepad input and isolate the state inside the context -- rather than having multiple components subscribed (like the hook -> state example).
 
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
+### Debugging Gamepad Input
 
-## Including Styles
+When working on apps with gamepad input, it helps to visualize the input.
 
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
+You can quickly print out all buttons using this code:
 
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
+```jsx
+import React, { useState } from 'react';
+import { useGamepads } from 'react-gamepads';
 
-## Publishing to NPM
+export default function App() {
+  const [gamepads, setGamepads] = useState({});
+  useGamepads(gamepads => setGamepads(gamepads));
 
-We recommend using [np](https://github.com/sindresorhus/np).
+  const gamepadDisplay = Object.keys(gamepads).map(gamepadId => {
+    // console.log("displaying gamepad", gamepads[gamepadId]);
+    return (
+      <div>
+        <h2>{gamepads[gamepadId].id}</h2>
+        {gamepads[gamepadId].buttons &&
+          gamepads[gamepadId].buttons.map((button, index) => (
+            <div>
+              {index}: {button.pressed ? 'True' : 'False'}
+            </div>
+          ))}
+      </div>
+    );
+  });
 
-## Usage with Lerna
-
-When creating a new package with TSDX within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
+  return (
+    <div className="Gamepads">
+      <h1>Gamepads</h1>
+      {gamepadDisplay}
+    </div>
+  );
+}
 ```
 
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+Or you can use the `<GamepadController>` component to see a controller. This will display the specified controller's input, and you can _optionally_ provide styling (like fixing it to a corner of the screen):
+
+```jsx
+<GamepadController
+  controller={1}
+  style={{ position: 'fixed', bottom: 0, right: 0 }}
+/>
+```
+
+## Examples
+
+Here are some examples to get you started using this library and get those creative juices pumping ⚡️🧠💡
+
+### Game Cursor
+
+This is a simple example of using the analog sticks and directional pad to move a cursor around the screen. You can also press a button to change the cursor color. It uses `framer-motion` under the hood to smoothly animate the cursor. Keep in mind this does not check for the edges of the screen.
+
+[Browse and run the code using CodeSandbox](https://codesandbox.io/s/react-gamepad-with-cursor-analog-support-better-perf-4buhx)
+
+### Menu
+
+This is an example of using controller input to navigate an HTML menu. You can press the up or down buttons on the directional pad to change the active item of the menu. Pressing a button "clicks" the link, navigating to the selected route.
+
+[Browse and run the code using CodeSandbox](https://codesandbox.io/s/react-gamepad-menu-w-controller-ui-hook-version-with-press-navigation-5y03m)
+
+### Horse Game
+
+This is a simple game based on the **"Horse Stance"** mini-game from Shenmue 3. It features a "Game Start" screen with a "Press any button" example, game input using analog sticks and directional pad, and other basic game design techniques. The goal of the game is to keep the "position" at or around 500, which gives you the highest score.
+
+[Browse and run the code using CodeSandbox](https://codesandbox.io/s/react-gamepad-menu-w-controller-ui-hook-version-shenmue-horse-working-oioei)
+
+## Development
+
+1. Install dependencies: `yarn`
+1. Compile TS to JS with hot reloading: `yarn watch`
+
+> Want to test development inside another React project? Try using `npm link` to symlink the local package to your test React app.
+
+### Commits
+
+1. Stage your changes: `git add .`
+1. Commit using the Commitzen CLI: `yarn commit`
+
+This will walk you through the process of writing the proper syntax for semantic release.
+
+> Make sure to lint your work before your try committing. The commit process runs linting, and if it fails it will fail your commit, forcing you to write it over again.
+
+### Release
+
+1. Install: `yarn`
+1. Build: `yarn build`
+1. Release: `yarn semantic-release`
+1. Publish: `npm publish`
+
+Ideally this should be handled by the CI/CD. There is a Github Actions workflow that handles most of this, minus the NPM publish.
+
+# Credits / References
+
+- [Gamepad API - MDN Docs](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API)
