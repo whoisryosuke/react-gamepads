@@ -1,4 +1,4 @@
-# 🎮 react-gamepads 🕹
+# react-gamepads 🕹🎮
 
 A set of hooks and utilities for using the [Gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API) inside React. Use a hook, get access to gamepad input -- it's that easy.
 
@@ -8,7 +8,7 @@ A set of hooks and utilities for using the [Gamepad API](https://developer.mozil
 yarn add react-gamepads
 ```
 
-Now you just pick: **hooks** or **context**? 👇🏼
+Now you just pick: [**hooks**](#usegamepads-hook) or [**context**](#gamepadsprovider-context)? 👇🏼
 
 ### `useGamepads` Hook
 
