@@ -1,8 +1,11 @@
 {
+  "name": "react-gamepads",
+  "author": "Ryosuke",
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "module": "dist/react-gamepads.esm.js",
   "files": [
     "dist",
     "src"
@@ -39,24 +42,6 @@
       "@commitlint/config-conventional"
     ]
   },
-  "release": {
-    "prepare": [
-      "@semantic-release/changelog",
-      "@semantic-release/npm",
-      {
-        "path": "@semantic-release/git",
-        "assets": [
-          "package.json",
-          "package-lock.json",
-          "CHANGELOG.md"
-        ],
-        "message": "chore(release): ${nextRelease.version} [skip ci]nn${nextRelease.notes}"
-      }
-    ]
-  },
-  "name": "react-gamepads",
-  "author": "Ryosuke",
-  "module": "dist/react-gamepads.esm.js",
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^9.1.2",
@@ -78,5 +63,21 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "release": {
+    "prepare": [
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      {
+        "path": "@semantic-release/git",
+        "assets": [
+          "dist/**/*.{js,ts}",
+          "package.json",
+          "package-lock.json",
+          "CHANGELOG.md"
+        ],
+        "message": "chore(release): ${nextRelease.version} [skip ci]nn${nextRelease.notes}"
+      }
+    ]
   }
 }
