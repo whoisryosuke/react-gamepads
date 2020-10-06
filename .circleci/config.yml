@@ -6,7 +6,8 @@ jobs:
     steps:
       - checkout
       - run: yarn install --frozen-lockfile
-      - run: yarn run test:unit -u
+      - run: yarn run lint -u
+      - run: yarn run test -u
 
   release:
     docker:
