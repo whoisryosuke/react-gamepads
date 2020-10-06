@@ -1,19 +1,19 @@
 import { useEffect, useRef } from 'react';
 
-export default function useGamepads(callback) {
-  const gamepads = useRef({});
-  const requestRef = useRef();
+interface GamepadRef {
+  [key: number]: Gamepad;
+}
+
+export default function useGamepads(callback: (data: GamepadRef) => void) {
+  const gamepads = useRef<GamepadRef>([]);
+  const requestRef = useRef<number>();
 
   var haveEvents = 'ongamepadconnected' in window;
 
-  const addGamepad = gamepad => {
+  const addGamepad = (gamepad: Gamepad) => {
     gamepads.current = {
       ...gamepads.current,
-      [gamepad.index]: {
-        buttons: gamepad.buttons,
-        id: gamepad.id,
-        axes: gamepad.axes,
-      },
+      [gamepad.index]: gamepad,
     };
 
     // Send data to external callback (like React state)
@@ -28,8 +28,8 @@ export default function useGamepads(callback) {
    * Adds game controllers during connection event listener
    * @param {object} e
    */
-  const connectGamepadHandler = e => {
-    addGamepad(e.gamepad);
+  const connectGamepadHandler = (e: Event) => {
+    addGamepad((e as GamepadEvent).gamepad);
   };
 
   /**
@@ -45,9 +45,8 @@ export default function useGamepads(callback) {
 
     // Loop through all detected controllers and add if not already in state
     for (var i = 0; i < detectedGamepads.length; i++) {
-      if (detectedGamepads[i]) {
-        addGamepad(detectedGamepads[i]);
-      }
+      const newGamepads = detectedGamepads[i];
+      if (newGamepads && newGamepads !== null) addGamepad(newGamepads);
     }
   };
 
@@ -62,14 +61,14 @@ export default function useGamepads(callback) {
   });
 
   // Update each gamepad's status on each "tick"
-  const animate = time => {
+  const animate = () => {
     if (!haveEvents) scanGamepads();
     requestRef.current = requestAnimationFrame(animate);
   };
 
   useEffect(() => {
     requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
+    return () => cancelAnimationFrame(requestRef.current!);
   });
 
   return gamepads.current;

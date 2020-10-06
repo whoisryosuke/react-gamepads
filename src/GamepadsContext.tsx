@@ -7,9 +7,13 @@ import React, {
 } from 'react';
 const GamepadsContext = createContext({});
 
-const GamepadsProvider = ({ children }) => {
+interface GamepadsProviderProps {
+  children: React.ReactNode;
+}
+
+const GamepadsProvider = ({ children }: GamepadsProviderProps) => {
   const [gamepads, setGamepads] = useState({});
-  const requestRef = useRef();
+  const requestRef = useRef<number>();
 
   var haveEvents = 'ongamepadconnected' in window;
 
@@ -34,9 +38,8 @@ const GamepadsProvider = ({ children }) => {
    * Adds game controllers during connection event listener
    * @param {object} e
    */
-  const connectGamepadHandler = e => {
-    addGamepad(e.gamepad);
-    // console.log("connecting gamepads", e, e.gamepad);
+  const connectGamepadHandler = (e: Event) => {
+    addGamepad((e as GamepadEvent).gamepad);
   };
 
   /**
@@ -76,7 +79,7 @@ const GamepadsProvider = ({ children }) => {
 
   useEffect(() => {
     requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
+    return () => cancelAnimationFrame(requestRef.current!);
   }, [animate]);
 
   return (
