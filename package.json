@@ -1,5 +1,6 @@
 {
   "name": "react-gamepads",
+  "description": "A set of hooks and utilities for using the Gamepad API inside React",
   "author": "Ryosuke",
   "version": "0.1.0",
   "license": "MIT",
