@@ -17,7 +17,7 @@
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
-    "semantic-release": "semantic-release"
+    "release": "semantic-release"
   },
   "peerDependencies": {
     "react": ">=16"

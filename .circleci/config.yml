@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  test_node_10:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: yarn install --frozen-lockfile
+      - run: yarn run test:unit -u
+
+  release:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: yarn install --frozen-lockfile
+      # Run optional required steps before releasing
+      # - run: npm run build-script
+      - run: npx semantic-release
+
+workflows:
+  version: 2
+  test_and_release:
+    # Run the test jobs first, then the release only when all the test jobs are successful
+    jobs:
+      - test_node_10
+      - release:
+          filters:
+            branches:
+              only:
+                - master
+                - beta
+          requires:
+            - test_node_10
